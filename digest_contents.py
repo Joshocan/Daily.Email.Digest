@@ -8,13 +8,11 @@ class DailyDigestContents:
                 api_key = api.read()
             forecast_url = f'http://api.openweathermap.org/data/2.5/weather?q={city},{state}&APPID={api_key}&units=metric'
             data = json.load(request.urlopen(forecast_url))
-            period = datetime.datetime.fromtimestamp(data['dt'])
             sunrise = datetime.datetime.fromtimestamp(data['sys']['sunrise'])
             sunset = datetime.datetime.fromtimestamp(data['sys']['sunset'])
 
             forecast_data = {'city': data['name'],
                              'country': data['sys']['country'],
-                             'current_date': period,
                              'sunrise': sunrise,
                              'sunset': sunset,
                              'temperature': round(data['main']['temp']),
@@ -23,7 +21,8 @@ class DailyDigestContents:
                              'humidity': round(data['main']['humidity']),
                              'weather_condition': data['weather'][0]['description']}
 
-            return forecast_data
+            return json.dumps(forecast_data, indent=4, sort_keys=True, default=str)
+
 #            return data_formatted
         except Exception as e:
             print(e)
@@ -82,15 +81,16 @@ if __name__ == '__main__':
     city = 'Ashaiman'
     state = 'Ghana'
     forecast_data = DailyDigestContents().get_weather_forecast(city,state)
-    print('Testing values from weather api data \n')
+    print('Testing the weather values \n')
     print(forecast_data)
 
     country = 'gb'
     sport_data = DailyDigestContents().get_sport_update(country)
-    print('Testing the top 20 sports headline  \n')
+    print('Testing the top 20 sports headlines  \n')
     print(sport_data)
 
     politics = DailyDigestContents().get_political_update(country='it')
+    print('Testing the top 20 political headlines  \n')
     print(politics)
 
 
